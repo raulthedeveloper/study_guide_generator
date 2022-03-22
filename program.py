@@ -35,6 +35,8 @@ class Program:
         print("--------------------------Word Document-----------------------------")
         print()
         convert.convert_from_word()
+
+        convert.convert_into_keywords()
         
         # will be used to push result into document inside of results folder
         # convert.create_word_doc()

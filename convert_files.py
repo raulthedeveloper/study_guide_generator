@@ -16,8 +16,20 @@ class Convert:
         self.file2 = file2
       
 
-    def test(self):
-        print("test is working")
+    def convert_into_keywords(self):
+        result = []
+        for item in self.convert_from_word():
+            separated = {
+                'full':item,
+                'words': item.split(" ")
+            }
+
+            result.append(separated)
+        return result
+        
+
+    def create_payload():
+        pass
 
     def convert_from_pdf(self):
         return 0
@@ -34,7 +46,8 @@ class Convert:
             print(val)
 
         return result
-        
+
+     
 
     def convert_from_powerpoint(self):
         prs = Presentation(self.file2)

@@ -5,7 +5,7 @@ from file_handler import File_Handler
 file1 = "C:\\Users\\raul_\\Downloads\Diversity Isn't what Divides Us.docx"
 file2 = "C:\\Users\\raul_\\Desktop\\Projects\\Study App\\datafiles\\powerpoints\\Diversity and the College Campus3.pptx"
 
-graphic_ui = Graphic_UI(500,900)
+graphic_ui = Graphic_UI(700,900)
 
 graphic_ui.run()
 

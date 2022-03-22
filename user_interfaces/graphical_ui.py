@@ -1,10 +1,5 @@
 ## Will contain Tinker Ui
-from cProfile import label
-from ctypes import resize
-from doctest import testmod
-from turtle import width
 
-from pypandoc import convert
 from file_handler import File_Handler
 from convert_files import Convert
 from program import Program
@@ -21,13 +16,16 @@ class Graphic_UI:
         
     ##program = Program(file1,file2)
     file_handler = File_Handler()
-    
     ppt_dir_path = f"{os.path.abspath(os.curdir)}\datafiles\powerpoints"
     word_dir_path = f"{os.path.abspath(os.curdir)}\datafiles\word"
     word_files = file_handler.get_file_names(word_dir_path)
     ppt_files = file_handler.get_file_names(ppt_dir_path)
     root = Tk()
     frame = LabelFrame(root,text="Study Guide Builder",padx=50,pady=50)
+    keyword_frame = LabelFrame(frame,text="Key Words",padx=5,pady=5)
+
+    current_question = {}
+    
 
     file_path_1 = StringVar()
     file_path_2 = StringVar()
@@ -37,21 +35,54 @@ class Graphic_UI:
    
     def labels(self):
         label1 = Label(self.frame, 
-                  text = "Questions").place(x = self.width/2 - 120,
-                                           y = 100) 
+                  text = "Questions") 
         
 
-        label2 = Label(self.root, 
-                  text = "PowerPoint").place(x = self.width/2 - 120,
-                                           y = 150)
+        label2 = Label(self.frame, 
+                  text = "PowerPoint")
 
-    def form_fields(self):
-        textBox1 = Entry(text="Placeholder text")
-        textBox2 = Entry(text="Placeholder text")
         
+        
+        label1.grid(column=1,row=0,pady=5)
+        label2.grid(column=2,row=0,pady=5)
+        
+    
+    def keyword_navigation(self):
 
-        textBox1.place(x=self.width/2 - 50, y=100)
-        textBox2.place(x=self.width/2 -50, y=150)
+        convert =  Convert(self.get_paths()['wordPath'],self.get_paths()['pptPath'])
+
+        index = 0
+
+        def forward():
+            nonlocal index
+            print("I go forward")
+            index += 1
+            self.current_question = convert.convert_into_keywords()[index]
+            self.keyword_listbox()
+            print(self.current_question['words'])
+            print("++++++++++++++++++++++++++++++++++++++++++=")
+
+        def backwards():
+            nonlocal index
+            print("I go backwards")
+            index -= 1
+            self.current_question = convert.convert_into_keywords()[index]
+            self.keyword_listbox()
+            print(self.current_question['words'])
+            print("++++++++++++++++++++++++++++++++++++++++++=")
+
+
+        button_frame = Frame(self.keyword_frame,padx=5,pady=5)
+        button_frame.grid(row=2,column=1)
+
+        prev = Button(button_frame,text="Prev",command=backwards)
+        next = Button(button_frame,text="Next",command=forward)
+        count_label = Label(button_frame,text="1 2 3 4")
+        count_label.grid(column=1,row=1,padx=10)
+
+        prev.grid(row=1,column=0)
+        next.grid(row=1,column=2)
+
 
 
     def button(self):
@@ -66,14 +97,20 @@ class Graphic_UI:
     def keyword_listbox(self):
         convert =  Convert(self.get_paths()['wordPath'],self.get_paths()['pptPath'])
 
-        listbox = Listbox(self.frame,width = 75)
-        listbox.grid(column=1,row=4,pady=10)
+        self.current_question = convert.convert_into_keywords()[0]
 
-        for item in convert.convert_from_word():
+
+        listbox = Listbox(self.keyword_frame,width = 75)
+        listbox.grid(column=1,row=1,pady=10)
+        self.keyword_navigation()
+
+
+        for item in self.current_question['words']:
             # convert sentences into word and do it one sentence at a time
-            listbox.insert(END,item)
-            print(item)
+
+             listbox.insert(END,item)
         
+
 
         # btn.pack(side='bottom')
     def files_selected1(self,OPTIONS):
@@ -109,9 +146,16 @@ class Graphic_UI:
 
     def run(self):
         self.frame.pack(pady=75)
+
+        self.keyword_frame.grid(column=1,row=5)
+        
+
+        self.labels()
         self.files_selected1(self.word_files)
         self.files_selected2(self.ppt_files)
         self.generate_listbox()
+        
+
         
         self.root.geometry(f"{self.height}x{self.width}")
         self.root.title("Study")
