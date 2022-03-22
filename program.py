@@ -19,11 +19,22 @@ class Program:
         return self.file2
 
     def start_program(self):
-        print("Program is running")
 
         convert = Convert(self.file1,self.file2)
         create_dir = File_Handler()
         
         create_dir.check_if_exists()
 
+        print()
+        print("--------------------------Power Point-----------------------------")
+        print()
+
         convert.convert_from_powerpoint()
+
+        print()
+        print("--------------------------Word Document-----------------------------")
+        print()
+        convert.convert_from_word()
+        
+        # will be used to push result into document inside of results folder
+        # convert.create_word_doc()

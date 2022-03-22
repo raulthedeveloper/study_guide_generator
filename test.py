@@ -1,23 +1,8 @@
-from tkinter import *
+test_string = "Today I was walking down the street"
 
-OPTIONS = [
-"Jan",
-"Feb",
-"Mar"
-] #etc
+formated = test_string.split(" ")
 
-master = Tk()
 
-variable = StringVar(master)
-variable.set(OPTIONS[0]) # default value
 
-w = OptionMenu(master, variable, *OPTIONS)
-w.pack()
-
-def ok():
-    print ("value is:" + variable.get())
-
-button = Button(master, text="OK", command=ok)
-button.pack()
-
-mainloop()
+for word in formated:
+    print(word)

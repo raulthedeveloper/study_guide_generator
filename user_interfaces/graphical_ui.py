@@ -1,14 +1,19 @@
 ## Will contain Tinker Ui
 from cProfile import label
+from ctypes import resize
+from doctest import testmod
+from turtle import width
+
+from pypandoc import convert
 from file_handler import File_Handler
+from convert_files import Convert
 from program import Program
 from tkinter import *
+import os
 
 
 
 class Graphic_UI:
-
-    
 
     def __init__(self,width,height):
         self.width = width
@@ -16,21 +21,25 @@ class Graphic_UI:
         
     ##program = Program(file1,file2)
     file_handler = File_Handler()
-    ppt_dir_path = "C:\\Users\\raul_\\Desktop\\Projects\\Study App\datafiles\powerpoints"
-    word_dir_path = "C:\\Users\\raul_\\Desktop\\Projects\\Study App\datafiles\word"
+    
+    ppt_dir_path = f"{os.path.abspath(os.curdir)}\datafiles\powerpoints"
+    word_dir_path = f"{os.path.abspath(os.curdir)}\datafiles\word"
     word_files = file_handler.get_file_names(word_dir_path)
     ppt_files = file_handler.get_file_names(ppt_dir_path)
     root = Tk()
+    frame = LabelFrame(root,text="Study Guide Builder",padx=50,pady=50)
 
     file_path_1 = StringVar()
     file_path_2 = StringVar()
 
 
+    
    
     def labels(self):
-        label1 = Label(self.root, 
+        label1 = Label(self.frame, 
                   text = "Questions").place(x = self.width/2 - 120,
                                            y = 100) 
+        
 
         label2 = Label(self.root, 
                   text = "PowerPoint").place(x = self.width/2 - 120,
@@ -46,51 +55,68 @@ class Graphic_UI:
 
 
     def button(self):
-        # btn = Button(self.root, text="Start", command=self.program.start_program)   
-        btn = Button(self.root, text="Start", command=self.create_path)  
-        btn.place(x = self.width/2, y = self.height/2)
+        btn = Button(self.frame, text="Start", command=self.start_program)   
+        btn.grid(row=2,column=2,pady=2)
+
+    def generate_listbox(self):
+        btn = Button(self.frame, text="Generate Keyword List", command=self.keyword_listbox)   
+        btn.grid(row=2,column=1,pady=2)
+
+
+    def keyword_listbox(self):
+        convert =  Convert(self.get_paths()['wordPath'],self.get_paths()['pptPath'])
+
+        listbox = Listbox(self.frame,width = 75)
+        listbox.grid(column=1,row=4,pady=10)
+
+        for item in convert.convert_from_word():
+            # convert sentences into word and do it one sentence at a time
+            listbox.insert(END,item)
+            print(item)
+        
 
         # btn.pack(side='bottom')
     def files_selected1(self,OPTIONS):
-        variable = StringVar(self.root)
-        variable.set(OPTIONS[0]) # default value
+        self.file_path_1.set(OPTIONS[0])
 
-        w = OptionMenu(self.root, self.file_path_1, *OPTIONS)
-        w.pack()
+        w = OptionMenu(self.frame, self.file_path_1, *OPTIONS)
+        w.grid(row=1,column=1, pady=2)
 
         
 
 
     def files_selected2(self,OPTIONS):
-        variable = StringVar(self.root)
-        variable.set(OPTIONS[0]) # default value
+        self.file_path_2.set(OPTIONS[0])
 
-        w = OptionMenu(self.root, self.file_path_2, *OPTIONS)
-        w.pack()
+        w = OptionMenu(self.frame, self.file_path_2, *OPTIONS)
+        w.grid(row=1,column=2, pady=2)
 
         
 
-    def create_path(self):   
+    def get_paths(self):   
+        filepaths = {
+           'wordPath':f"{self.word_dir_path}//{self.file_path_1.get()}",
+           'pptPath': f"{self.ppt_dir_path}//{self.file_path_2.get()}"
+        }
+        return filepaths
 
-        print(f"{self.word_dir_path}//{self.file_path_1.get()}")
-        print(f"{self.ppt_dir_path}//{self.file_path_2.get()}")
 
+    def start_program(self):
+        program = Program(self.get_paths()['wordPath'],self.get_paths()['pptPath'])
 
-    
+        program.start_program()
         
 
     def run(self):
-        print("Graphic Ui is working")
-
+        self.frame.pack(pady=75)
         self.files_selected1(self.word_files)
         self.files_selected2(self.ppt_files)
+        self.generate_listbox()
         
         self.root.geometry(f"{self.height}x{self.width}")
         self.root.title("Study")
         self.root.config(bg="#e0e0e0")        
-
-
-        # self.form_fields()
+       
         # self.labels()
         
         self.button()

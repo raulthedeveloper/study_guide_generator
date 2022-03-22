@@ -3,8 +3,9 @@
 import collections 
 import collections.abc
 from pptx import Presentation
+import docx
+from docx import Document
 
-import pypandoc
 
 
 
@@ -22,8 +23,17 @@ class Convert:
         return 0
 
     def convert_from_word(self):
-        output = pypandoc.convert_file(self.file1, 'txt', outputfile="somefile.txt")
-        assert output == ""
+       
+        # open connection to Word Document
+        doc = docx.Document(self.file1)
+        
+        # read in each paragraph in file
+        result = [p.text for p in doc.paragraphs]
+        
+        for val in result:
+            print(val)
+
+        return result
         
 
     def convert_from_powerpoint(self):
@@ -41,4 +51,10 @@ class Convert:
 
     def create_word_doc(self):
         #Will be used to results back into a word document
-        return 
+        document = Document()
+        document.add_heading('The REAL meaning of the universe')
+        document.add_paragraph('Lorem ipsum dolor sit amet.')
+
+        document.save('./datafiles/results/test.docx')
+        
+       

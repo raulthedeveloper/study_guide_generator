@@ -3,8 +3,7 @@ import os
 
 
 class File_Handler:
-    
-     
+        
 
     def create_directory():
         os.makedirs('datafiles/powerpoints')
@@ -23,15 +22,9 @@ class File_Handler:
     def check_if_exists(self):
         if(os.path.exists("datafiles") == False):
            self.create_directory()
-        else:
-            print("Path exist") 
+        
     
-    def get_list_of_ppx_files():
-        #returns list of all files in select folder to be used when selecting file
-        return
-
-    def get_list_of_word_files():
-        return
+   
 
     
     
